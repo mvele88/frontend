@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>M & M A.I. PLATFORM</title>
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 2rem;
+    }
+    button {
+      padding: 1rem 2rem;
+      margin: 1rem;
+      font-size: 1.2rem;
+      border: none;
+      background: #0f0;
+      color: #000;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #5f5;
+    }
+    #logBox {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #111;
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>M & M A.I. PLATFORM</h1>
+  <p>Live Mode: ✅ | Powered by Jupiter Pro 🔥</p>
+
+  <div>
+    <button id="startBtn">Start Bot</button>
+    <button id="stopBtn" disabled>Stop Bot</button>
+  </div>
+
+  <h3 id="status">Bot Offline</h3>
+
+  <div id="logBox"></div>
+
+  <script>
+    const backendURL = "https://crypto-backend-3wkks3cdr-samuel-s-projects-545d58d6.vercel.app";
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const statusEl = document.getElementById("status");
+    const logBox = document.getElementById("logBox");
+
+    function log(message, type = 'info') {
+      const time = new Date().toLocaleTimeString();
+      const color = type === 'error' ? 'red' : type === 'success' ? 'lime' : '#0f0';
+      logBox.innerHTML += `<div style="color:${color}">[${time}] ${message}</div>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    startBtn.onclick = async () => {
+      try {
+        const res = await fetch(`${backendURL}/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+          statusEl.textContent = "Bot Active ✅";
+          log("Bot started.", "success");
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+        } else {
+          log(`Error: ${data.error}`, "error");
+        }
+      } catch (err) {
+        log("Failed to start bot: " + err.message, "error");
+      }
+    };
+
+    stopBtn.onclick = async () => {
+      try {
+        const res = await fetch(`${backendURL}/stop`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success) {
+          statusEl.textContent = "Bot Offline";
+          log("Bot stopped.", "success");
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+        } else {
+          log(`Error: ${data.error}`, "error");
+        }
+      } catch (err) {
+        log("Failed to stop bot: " + err.message, "error");
+      }
+    };
+  </script>
+</body>
+</html>
