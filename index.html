@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M & M A.I. PLATFORM</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <style>
+        body {
+            background: #000;
+            color: #0ff;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+        }
+        .connected { color: lime; }
+        .bot-active { color: yellow; }
+        .log-entry { margin: 5px 0; }
+        .log-timestamp { color: gray; }
+        .token-card {
+            border: 1px solid #0ff;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            width: 150px;
+            background: #111;
+        }
+        button {
+            background: #0ff;
+            color: #000;
+            padding: 10px 15px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>M & M A.I. PLATFORM</h1>
+    <div id="walletStatus">Wallet not connected</div>
+    <button id="connectBtn">Connect Phantom</button>
+    <button id="startBtn" disabled>Start Bot</button>
+    <button id="stopBtn" disabled>Stop Bot</button>
+    <button id="testJupiterBtn" disabled>Test Jupiter</button>
+    <button id="refreshTokensBtn" disabled>Refresh Tokens</button>
+    <div id="botStatus">Bot offline</div>
+    <div id="jupiterStatus"></div>
+    <div id="tokenGrid"></div>
+    <div id="logsContainer" style="max-height: 300px; overflow-y: scroll; border: 1px solid #0ff; padding: 10px; margin-top: 20px;"></div>
+    <script>
+        const connectBtn = document.getElementById("connectBtn");
+        const startBtn = document.getElementById("startBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const testJupiterBtn = document.getElementById("testJupiterBtn");
+        const refreshTokensBtn = document.getElementById("refreshTokensBtn");
+        const walletStatus = document.getElementById("walletStatus");
+        const botStatus = document.getElementById("botStatus");
+        const jupiterStatus = document.getElementById("jupiterStatus");
+        const tokenGrid = document.getElementById("tokenGrid");
+        const logsContainer = document.getElementById("logsContainer");
+        let provider = null;
+        let botActive = false;
+        let tradingInterval;
+
+        const addLog = (msg, type='info') => {
+            const time = new Date().toLocaleTimeString();
+            logsContainer.innerHTML += `<div class='log-entry'><span class='log-timestamp'>[${time}]</span> ${msg}</div>`;
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        };
+
+        async function getSOLPriceUSD() {
+            try {
+                const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+                const data = await res.json();
+                return data.solana.usd;
+            } catch {
+                return 20;
+            }
+        }
+
+        async function checkBalance() {
+            if (!provider || !provider.publicKey) return;
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+            const balance = await connection.getBalance(provider.publicKey);
+            const sol = balance / 1e9;
+            const usd = sol * await getSOLPriceUSD();
+            walletStatus.textContent = `Balance: ${sol.toFixed(4)} SOL (~$${usd.toFixed(2)})`;
+            startBtn.disabled = false;
+            stopBtn.disabled = false;
+            testJupiterBtn.disabled = false;
+            refreshTokensBtn.disabled = false;
+        }
+
+        async function connectWallet() {
+            if (!window.phantom?.solana?.isPhantom) {
+                alert('Phantom wallet not found.');
+                return;
+            }
+            provider = window.phantom.solana;
+            try {
+                await provider.connect();
+                connectBtn.textContent = 'Connected';
+                connectBtn.disabled = true;
+                await checkBalance();
+                addLog("Wallet connected.", 'success');
+            } catch (e) {
+                addLog("Connection failed.", 'error');
+            }
+        }
+
+        async function startBot() {
+            if (!provider?.publicKey) return;
+            botActive = true;
+            botStatus.textContent = "Bot is trading...";
+            botStatus.classList.add("bot-active");
+            addLog("Bot started.");
+            try {
+                const res = await fetch("https://crypto-backend-oj99k0zme-samuel-s-projects-545d58d6.vercel.app/start", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: provider.publicKey.toString() })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    addLog("Backend confirmed bot start.", 'success');
+                } else {
+                    addLog("Backend error starting bot.", 'error');
+                }
+            } catch (e) {
+                addLog("Backend unreachable.", 'error');
+            }
+        }
+
+        async function stopBot() {
+            botActive = false;
+            botStatus.textContent = "Bot offline";
+            botStatus.classList.remove("bot-active");
+            addLog("Bot stopped.");
+            try {
+                await fetch("https://crypto-backend-oj99k0zme-samuel-s-projects-545d58d6.vercel.app/stop", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (e) {
+                addLog("Failed to notify backend.", 'error');
+            }
+        }
+
+        async function testJupiterAPI() {
+            jupiterStatus.textContent = "Testing Jupiter...";
+            addLog("Testing Jupiter Pro API...");
+            try {
+                const res = await fetch("https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapT8G4wEGGkZwyTDt1v&amount=1000000&slippageBps=50");
+                const data = await res.json();
+                if (res.ok && data.outAmount) {
+                    jupiterStatus.textContent = `Jupiter Pro OK - 1 SOL ~ ${data.outAmount / 1e6} USDC`;
+                    addLog("Jupiter Pro is working.", 'success');
+                } else {
+                    jupiterStatus.textContent = "Jupiter API test failed.";
+                    addLog("Jupiter API failed.", 'error');
+                }
+            } catch (e) {
+                jupiterStatus.textContent = "Network error";
+                addLog("Jupiter API network error.", 'error');
+            }
+        }
+
+        connectBtn.addEventListener("click", connectWallet);
+        startBtn.addEventListener("click", startBot);
+        stopBtn.addEventListener("click", stopBot);
+        testJupiterBtn.addEventListener("click", testJupiterAPI);
+        refreshTokensBtn.addEventListener("click", () => addLog("Token refresh placeholder."));
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (window.phantom?.solana?.isConnected) {
+                provider = window.phantom.solana;
+                await checkBalance();
+                connectBtn.textContent = 'Connected';
+                connectBtn.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
