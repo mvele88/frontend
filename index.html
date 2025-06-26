@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M & M A.I. PLATFORM</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #000611;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    #status, #logs {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      background: #0ff;
+      border: none;
+      border-radius: 5px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0ff;
+      margin: 5px;
+    }
+    .log-entry {
+      background: #111;
+      padding: 5px;
+      margin-top: 3px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>M & M A.I. PLATFORM</h1>
+  <div>
+    <button id="startBtn" class="button">Start Bot</button>
+    <button id="stopBtn" class="button" disabled>Stop Bot</button>
+  </div>
+
+  <div id="status">
+    <p id="botStatus">Bot Status: Offline</p>
+    <p id="profitStatus">Daily Profit: $0.00</p>
+  </div>
+
+  <div id="logs">
+    <h3>Logs:</h3>
+    <div id="logsContainer" style="max-height: 300px; overflow-y: scroll; background: #111; padding: 10px; border: 1px solid #333;"></div>
+  </div>
+
+  <script>
+    const backendURL = 'https://crypto-backend-oj99k0zme-samuel-s-projects-545d58d6.vercel.app';
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const botStatus = document.getElementById('botStatus');
+    const profitStatus = document.getElementById('profitStatus');
+    const logsContainer = document.getElementById('logsContainer');
+    let profit = 0;
+    let intervalId;
+
+    function addLog(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      div.textContent = `[${timestamp}] ${message}`;
+      logsContainer.appendChild(div);
+      logsContainer.scrollTop = logsContainer.scrollHeight;
+    }
+
+    startBtn.onclick = async () => {
+      try {
+        const res = await fetch(`${backendURL}/start`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          botStatus.textContent = 'Bot Status: Online';
+          addLog('Bot started successfully.');
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+
+          intervalId = setInterval(() => {
+            profit += Math.random() * 10;
+            profitStatus.textContent = `Daily Profit: $${profit.toFixed(2)}`;
+          }, 3000);
+        } else {
+          addLog(`Error: ${data.error || 'Unknown error'}`);
+        }
+      } catch (err) {
+        addLog(`Failed to start bot: ${err.message}`);
+      }
+    };
+
+    stopBtn.onclick = async () => {
+      try {
+        const res = await fetch(`${backendURL}/stop`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          botStatus.textContent = 'Bot Status: Offline';
+          addLog('Bot stopped successfully.');
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          clearInterval(intervalId);
+        } else {
+          addLog(`Error: ${data.error || 'Unknown error'}`);
+        }
+      } catch (err) {
+        addLog(`Failed to stop bot: ${err.message}`);
+      }
+    };
+  </script>
+</body>
+</html>
