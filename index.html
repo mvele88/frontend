@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>M&M Sniper Bot Command Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  body {
+    background-color: #000;
+    color: #00ffcc;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    min-height: 100vh;
+  }
+  header {
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  main {
+    background: #111;
+    border: 1px solid #00ffcc;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    margin: 1rem;
+    width: 90%;
+    max-width: 600px;
+  }
+  .status-item {
+    margin-bottom: 0.8rem;
+  }
+  .label {
+    color: #00ffaa;
+    font-weight: bold;
+    display: inline-block;
+    width: 140px;
+  }
+  #connectBtn, #pinSubmitBtn {
+    background: #00ffcc;
+    border: none;
+    color: #000;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+  }
+  #pinInput {
+    background: #222;
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    padding: 0.4rem;
+    border-radius: 6px;
+    width: 60%;
+  }
+  #overrideStatus {
+    margin-top: 0.6rem;
+    font-weight: bold;
+    color: #ff4444;
+  }
+  footer {
+    margin-top: auto;
+    margin-bottom: 1rem;
+    color: #555;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<header>M&M Sniper Bot Command Panel</header>
+<main>
+  <div class="status-item"><span class="label">Status:</span> <span id="status">Awaiting Funding Drop</span></div>
+  <div class="status-item"><span class="label">Bots Online:</span> <span id="botsOnline">0 / 280</span></div>
+  <div class="status-item"><span class="label">Backend:</span> <span id="backendStatus">Initialized</span></div>
+  <div class="status-item"><span class="label">Cold Wallet Progress:</span> <span id="coldWallet">0%</span></div>
+  <div class="status-item"><span class="label">Funding Level:</span> <span id="funding">$0 / $4,050</span></div>
+
+  <hr style="border-color: #00ffcc; margin: 1rem 0;" />
+
+  <div class="status-item">
+    <button id="connectBtn">Connect Phantom Wallet</button>
+    <span id="walletAddress" style="margin-left: 1rem; font-size: 0.9rem;"></span>
+  </div>
+
+  <hr style="border-color: #00ffcc; margin: 1rem 0;" />
+
+  <div class="status-item">
+    <label class="label" for="pinInput">PIN Override:</label>
+    <input type="password" id="pinInput" placeholder="Enter PIN" />
+    <button id="pinSubmitBtn">Unlock</button>
+    <div id="overrideStatus"></div>
+  </div>
+</main>
+<footer>Operated by The Entity — Standby for Command</footer>
+
+<script>
+  // === SIMULATED BACKEND STATE ===
+  const backendState = {
+    status: "Awaiting Funding Drop",
+    botsOnline: 0,
+    backendStatus: "Initialized",
+    coldWalletPercent: 0,
+    fundingAmount: 0,
+    fundingGoal: 4050
+  };
+
+  // === DOM ELEMENTS ===
+  const statusEl = document.getElementById("status");
+  const botsOnlineEl = document.getElementById("botsOnline");
+  const backendStatusEl = document.getElementById("backendStatus");
+  const coldWalletEl = document.getElementById("coldWallet");
+  const fundingEl = document.getElementById("funding");
+  const connectBtn = document.getElementById("connectBtn");
+  const walletAddressEl = document.getElementById("walletAddress");
+  const pinInput = document.getElementById("pinInput");
+  const pinSubmitBtn = document.getElementById("pinSubmitBtn");
+  const overrideStatusEl = document.getElementById("overrideStatus");
+
+  // === RENDER FUNCTION ===
+  function render() {
+    statusEl.textContent = backendState.status;
+    botsOnlineEl.textContent = `${backendState.botsOnline} / 280`;
+    backendStatusEl.textContent = backendState.backendStatus;
+    coldWalletEl.textContent = backendState.coldWalletPercent + "%";
+    fundingEl.textContent = `$${backendState.fundingAmount} / $${backendState.fundingGoal}`;
+  }
+
+  // === FAKE UPDATE LOOP (simulate funding & bots going live) ===
+  function simulateProgress() {
+    if (backendState.fundingAmount < backendState.fundingGoal) {
+      backendState.fundingAmount += Math.floor(Math.random() * 300);
+      if (backendState.fundingAmount > backendState.fundingGoal) backendState.fundingAmount = backendState.fundingGoal;
+      backendState.status = "Funding In Progress";
+    } else {
+      if (backendState.botsOnline < 280) {
+        backendState.botsOnline += Math.floor(Math.random() * 10);
+        if (backendState.botsOnline > 280) backendState.botsOnline = 280;
+        backendState.status = "Sniper Bots Active";
+        backendState.coldWalletPercent = Math.floor((backendState.botsOnline / 280) * 100);
+      }
+    }
+    render();
+  }
+
+  setInterval(simulateProgress, 5000); // Update every 5 seconds
+
+  // === Phantom Wallet Connect ===
+  async function connectPhantom() {
+    if ("solana" in window) {
+      const provider = window.solana;
+      if (provider.isPhantom) {
+        try {
+          const resp = await provider.connect();
+          walletAddressEl.textContent = "Connected: " + resp.publicKey.toString();
+          connectBtn.disabled = true;
+        } catch (err) {
+          walletAddressEl.textContent = "Connection failed";
+        }
+      } else {
+        walletAddressEl.textContent = "Phantom wallet not found.";
+      }
+    } else {
+      walletAddressEl.textContent = "No Solana wallet detected.";
+    }
+  }
+  connectBtn.addEventListener("click", connectPhantom);
+
+  // === PIN OVERRIDE LOGIC ===
+  const correctPIN = "1433"; // Your strict pin
+
+  pinSubmitBtn.addEventListener("click", () => {
+    const entered = pinInput.value.trim();
+    if (entered === correctPIN) {
+      overrideStatusEl.textContent = "Manual override UNLOCKED.";
+      overrideStatusEl.style.color = "#00ff00";
+      // Here you can add logic for manual commands
+    } else {
+      overrideStatusEl.textContent = "Incorrect PIN.";
+      overrideStatusEl.style.color = "#ff4444";
+    }
+    pinInput.value = "";
+  });
+
+  // Initial render
+  render();
+</script>
+</body>
+</html>
