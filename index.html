@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrueBotAI Ultra Yield Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #0a0f1a;
+      color: #cbd5e1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    header {
+      background: #111827;
+      padding: 1rem 2rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 2px solid #f59e0b;
+      box-shadow: 0 0 15px #f59e0b;
+      color: #f59e0b;
+    }
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 500;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+    header .fee-notice {
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      color: #fbbf24;
+    }
+    button.connect-wallet {
+      background: #f59e0b;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      border-radius: 25px;
+      color: #0a0f1a;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      margin: 1rem 0;
+    }
+    button.connect-wallet:hover {
+      background: #d97706;
+    }
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background: transparent;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      color: #fbbf24;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      transition: background 0.3s ease, color 0.3s ease;
+      letter-spacing: 1px;
+      min-width: 110px;
+      text-align: center;
+    }
+    nav button.active, nav button:hover {
+      background: #f59e0b;
+      color: #0a0f1a;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+    main {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .section {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 20px #11182788;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.3s ease;
+    }
+    .section:hover {
+      box-shadow: 0 0 30px #f59e0bcc;
+    }
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: #fbbf24;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      letter-spacing: 1.5px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #111827;
+      border-radius: 10px;
+      padding: 1.2rem;
+      box-shadow: inset 0 0 8px #f59e0baa;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 320px;
+      color: #fcd34d;
+    }
+    .card h3 {
+      margin: 0 0 0.6rem 0;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .card p {
+      flex-grow: 1;
+      font-size: 0.9rem;
+      color: #fde68acc;
+      margin-bottom: 1rem;
+    }
+    .earnings {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    .earnings span {
+      display: block;
+      font-weight: 600;
+    }
+    .min-invest {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 1rem;
+    }
+    .card button {
+      background: #f59e0b;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      color: #0a0f1a;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      align-self: flex-start;
+    }
+    .card button:hover {
+      background: #d97706;
+    }
+    footer {
+      text-align: center;
+      color: #fbbf24;
+      font-size: 0.9rem;
+      padding: 1.5rem 0;
+      letter-spacing: 1px;
+      border-top: 1px solid #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>TrueBotAI Ultra Yield</h1>
+  <div class="fee-notice">Performance Fee: <strong>20% of net profits</strong> only</div>
+  <button class="connect-wallet">Connect Wallet</button>
+</header>
+
+<nav>
+  <button class="active" data-section="trading">Ultra Trading Bots</button>
+  <button data-section="sniping">Extreme Sniping</button>
+  <button data-section="staking">Yield Farming</button>
+  <button data-section="mining">Quantum Mining</button>
+  <button data-section="portfolio">Portfolio Overview</button>
+</nav>
+
+<main>
+  <section id="trading" class="section">
+    <h2>Ultra Trading Bots</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Leverage Trading Bot</h3>
+        <p>Utilizes margin and algorithmic trading for ultra-high returns. Suitable only for experienced investors.</p>
+        <div class="earnings">
+          <span>Daily: 4.0 SOL (~$120)</span>
+          <span>Monthly: 120 SOL (~$3,600)</span>
+          <span>Yearly: 1440 SOL (~$43,200)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 300 SOL (~$9,000)</div>
+        <button>Activate</button>
+      </div>
+      <div class="card">
+        <h3>Ultra Aggressive Bot</h3>
+        <p>High-frequency leveraged trading targeting maximum returns. Expect volatility and risk.</p>
+        <div class="earnings">
+          <span>Daily: 1.5 SOL (~$45)</span>
+          <span>Monthly: 45 SOL (~$1,350)</span>
+          <span>Yearly: 540 SOL (~$16,200)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 120 SOL (~$3,600)</div>
+        <button>Activate</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sniping" class="section" style="display:none;">
+    <h2>Extreme Sniping</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Extreme Sniper Pro</h3>
+        <p>Lightning-fast token & NFT sniping, capturing the best launches with high volatility.</p>
+        <div class="earnings">
+          <span>Daily: 3.0 SOL (~$90)</span>
+          <span>Monthly: 90 SOL (~$2,700)</span>
+          <span>Yearly: 1080 SOL (~$32,400)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 250 SOL (~$7,500)</div>
+        <button>Configure & Launch</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="staking" class="section" style="display:none;">
+    <h2>Yield Farming</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Yield Farming Master</h3>
+        <p>Multi-protocol yield farming with compounding strategies for optimal returns.</p>
+        <div class="earnings">
+          <span>Daily: 1.8 SOL (~$54)</span>
+          <span>Monthly: 54 SOL (~$1,620)</span>
+          <span>Yearly: 648 SOL (~$19,440)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 180 SOL (~$5,400)</div>
+        <button>Stake Now</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="mining" class="section" style="display:none;">
+    <h2>Quantum Mining</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Quantum Mining Elite</h3>
+        <p>Next-gen mining contracts with dynamic ROI and premium hash power.</p>
+        <div class="earnings">
+          <span>Daily: 2.5 SOL (~$75)</span>
+          <span>Monthly: 75 SOL (~$2,250)</span>
+          <span>Yearly: 900 SOL (~$27,000)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 200 SOL (~$6,000)</div>
+        <button>Buy Contract</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="section" style="display:none;">
+    <h2>Portfolio Overview</h2>
+    <p>Your investments summary, profit & loss, and withdrawal options will appear here.</p>
+  </section>
+</main>
+
+<footer>
+  Performance Fee: <strong>20% of net profits</strong> — No upfront or hidden fees.
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('main section');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const target = btn.getAttribute('data-section');
+      sections.forEach(section => {
+        section.style.display = (section.id === target) ? 'block' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
