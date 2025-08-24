@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TrueBotAI Ultra Yield Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Roboto', sans-serif; background: #0a0f1a; color: #cbd5e1; }
+  header { background: #111827; padding: 1rem 2rem; border-bottom: 2px solid #f59e0b; text-align: center; }
+  header h1 { font-family: 'Orbitron', sans-serif; color: #fbbf24; margin: 0; }
+  header .fee-notice { color: #fbbf24; font-size: 0.9rem; margin-top: 0.3rem; }
+  button.connect-wallet { background: #f59e0b; border: none; padding: 0.6rem 1.3rem; border-radius: 25px; color: #0a0f1a; cursor: pointer; margin-top: 0.5rem; font-family: 'Orbitron', sans-serif; }
+  nav { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+  nav button { background: transparent; border: none; color: #fbbf24; padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-family: 'Orbitron', sans-serif; }
+  nav button.active, nav button:hover { background: #f59e0b; color: #0a0f1a; }
+  main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  .section { background: #1e293b; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; display: none; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 1rem; }
+  .card { background: #111827; border-radius: 10px; padding: 1rem; color: #fcd34d; display: flex; flex-direction: column; justify-content: space-between; min-height: 320px; }
+  .card h3 { color: #fbbf24; margin: 0 0 0.5rem 0; font-family: 'Orbitron', sans-serif; }
+  .card p { flex-grow: 1; font-size: 0.9rem; color: #fde68a; margin-bottom: 1rem; }
+  .card button { background: #f59e0b; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-family: 'Orbitron', sans-serif; }
+  .card button:hover { background: #d97706; }
+  footer { text-align: center; color: #fbbf24; padding: 1.5rem 0; border-top: 1px solid #f59e0b; }
+  .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+  .modal-content { background-color: #1e293b; padding: 2rem; border-radius: 12px; width: 80%; max-width: 500px; text-align: center; position: relative; }
+  .close-button { position: absolute; top: 10px; right: 20px; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
+  .close-button:hover { color: #fff; }
+  .portfolio-summary { background: #111827; border-radius: 10px; padding: 1.2rem; color: #fcd34d; }
+  .portfolio-summary .stat-item { margin-bottom: 1rem; }
+  .portfolio-summary .stat-item span { font-weight: 700; color: #fbbf24; }
+  #withdrawalBtn { background: #f59e0b; border: none; padding: 0.6rem 1rem; border-radius: 20px; font-family: 'Orbitron', sans-serif; font-weight: 700; color: #0a0f1a; cursor: pointer; }
+  #withdrawalBtn:hover { background: #d97706; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TrueBotAI Ultra Yield</h1>
+  <div class="fee-notice">Performance Fee: 20% of net profits only</div>
+  <button class="connect-wallet">Connect Wallet</button>
+</header>
+
+<nav>
+  <button class="active" data-section="trading">Ultra Trading Bots</button>
+  <button data-section="sniping">Extreme Sniping</button>
+  <button data-section="staking">Yield Farming</button>
+  <button data-section="mining">Quantum Mining</button>
+  <button data-section="portfolio">Portfolio Overview</button>
+</nav>
+
+<main>
+  <section id="trading" class="section" style="display:block">
+    <h2>Ultra Trading Bots</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmTWm6xa4yXTP8TUgWstqoKn5aGhfzoa5ejntuUyhFbHVn">
+        <h3>Leverage Trading Bot</h3>
+        <p>Utilizes margin and algorithmic trading for ultra-high returns. Suitable only for experienced investors.</p>
+        <button class="activate-btn">Activate</button>
+      </div>
+      <div class="card" data-cid="QmVWz7gJ2wP5qK9Xn2bT7sC8hA4dE5fF3rG9jH1mK5eL7t">
+        <h3>Ultra Aggressive Bot</h3>
+        <p>High-frequency leveraged trading targeting maximum returns. Expect volatility and risk.</p>
+        <button class="activate-btn">Activate</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sniping" class="section">
+    <h2>Extreme Sniping</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmQf6Lz9d5pX2zK8rN3hF1uE4tJ7cW9aA8sH6pY1eM4bN">
+        <h3>Extreme Sniper Pro</h3>
+        <p>Lightning-fast token & NFT sniping, capturing the best launches with high volatility.</p>
+        <button class="activate-btn">Configure & Launch</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="staking" class="section">
+    <h2>Yield Farming</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmSg6yK2xR1zP8aN3lH5cM9dF7oE2wT4jU6qV3fD1eW0g">
+        <h3>Yield Farming Master</h3>
+        <p>Multi-protocol yield farming with compounding strategies for optimal returns.</p>
+        <button class="activate-btn">Stake Now</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="mining" class="section">
+    <h2>Quantum Mining</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmPz4wD2xQ1zE7tB9uJ5cM6aD8eS3gG7hH9jK0lV1pY5o">
+        <h3>Quantum Mining Elite</h3>
+        <p>Next-gen mining contracts with dynamic ROI and premium hash power.</p>
+        <button class="activate-btn">Buy Contract</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="section">
+    <h2>Portfolio Overview</h2>
+    <div class="portfolio-summary">
+      <div class="stat-item"><h3>Current Balance:</h3><span id="currentBalance">200.00 SOL</span></div>
+      <div class="stat-item"><h3>Total Profits:</h3><span id="totalProfits">50.00 SOL</span></div>
+      <button id="withdrawalBtn">Initiate Withdrawal</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Performance Fee: <strong>20% of net profits</strong> — No upfront or hidden fees.
+</footer>
+
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@solana/web3.js@1.78.5/lib/index.iife.js"></script>
+<script>
+const paymentModal = document.getElementById('paymentModal');
+const closeButton = document.querySelector('.close-button');
+closeButton.onclick = () => paymentModal.style.display = 'none';
+window.onclick = e => { if(e.target===paymentModal) paymentModal.style.display='none'; };
+
+let userWallet = null;
+const connectButton = document.querySelector('.connect-wallet');
+
+const connectWallet = async () => {
+  if(window.solana && window.solana.isPhantom){
+    try{
+      const resp = await window.solana.connect();
+      userWallet = resp.publicKey;
+      connectButton.textContent = 'Wallet Connected';
+    } catch(e){ alert('Wallet connection failed'); }
+  } else { alert('Phantom wallet not found'); }
+};
+connectButton.addEventListener('click', connectWallet);
+window.addEventListener('load', connectWallet);
+
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const sectionId = btn.dataset.section;
+    document.querySelectorAll('main section').forEach(sec=>sec.style.display=(sec.id===sectionId)?'block':'none');
+  });
+});
+
+document.querySelectorAll('.activate-btn').forEach(btn=>{
+  btn.addEventListener('click', async (e)=>{
+    const card = e.target.closest('.card');
+    const cid = card.dataset.cid;
+    try{
+      const res = await fetch(`/api/ipfs/${cid}`);
+      if(!res.ok) throw new Error('Failed to fetch content');
+      const content = await res.text();
+      paymentModal.style.display='flex';
+      document.getElementById('modalTitle').textContent='IPFS Content Loaded';
+      document.getElementById('modalBody').innerHTML=content;
+    } catch(err){
+      paymentModal.style.display='flex';
+      document.getElementById('modalTitle').textContent='Content Error';
+      document.getElementById('modalBody').innerHTML=`<p>${err.message}</p>`;
+    }
+  });
+});
+
+// Withdrawal
+const withdrawalBtn = document.getElementById('withdrawalBtn');
+withdrawalBtn.addEventListener('click', async ()=>{
+  if(!userWallet){ alert('Please connect your wallet first'); return; }
+  try{
+    const res = await fetch(`/api/withdraw/${userWallet.toString()}`, { method:'POST' });
+    const result = await res.json();
+    paymentModal.style.display='flex';
+    document.getElementById('modalTitle').textContent='Withdrawal Status';
+    document.getElementById('modalBody').innerHTML=`<p>${result.message}</p>`;
+  } catch(err){
+    paymentModal.style.display='flex';
+    document.getElementById('modalTitle').textContent='Error';
+    document.getElementById('modalBody').innerHTML=`<p>${err.message}</p>`;
+  }
+});
+</script>
+</body>
+</html>
